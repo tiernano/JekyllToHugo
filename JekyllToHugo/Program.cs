@@ -50,8 +50,13 @@ namespace JekyllToHugo
 					Console.WriteLine(s);
 				}
 
+				//if you want to replace existing aliases with new ones use the following to remove old ones:
+
+				//mapping.Children.Remove("aliases");
+
 				if (!mapping.Children.ContainsKey("aliases"))
 				{
+
 					string filename = Path.GetFileNameWithoutExtension(s);
 					string filenameWithoutDate = filename.Substring(11);
 
@@ -64,7 +69,9 @@ namespace JekyllToHugo
 						continue;
 					}
 
-					string alias = $"{date.Year}/{date.Month}/{date.Day}/{filenameWithoutDate}.html";
+					string dateFormat = "yyyy/MM/dd";
+
+					string alias = $"{date.ToString(dateFormat)}/{filenameWithoutDate}.html";
 
 					string[] aliases = new string[]
 					{
