@@ -25,7 +25,6 @@ namespace JekyllToHugo
 				int startOfymlBlock = content.IndexOf("---", StringComparison.Ordinal);
 				int endOfymlBlock = content.IndexOf("---", startOfymlBlock +1, StringComparison.Ordinal);
 
-
 				string ymlBlock = content.Substring(startOfymlBlock, endOfymlBlock+3);
 
 				string markdown = content.Substring(endOfymlBlock + 3);
@@ -49,6 +48,42 @@ namespace JekyllToHugo
 
 					File.WriteAllText(s, $"---\n{newYml}\n---\n {markdown}");
 					Console.WriteLine(s);
+				}
+
+				if (!mapping.Children.ContainsKey("aliases"))
+				{
+					string filename = Path.GetFileNameWithoutExtension(s);
+					string filenameWithoutDate = filename.Substring(11);
+
+					var dateString = mapping.Children["date"].ToString();
+
+					DateTime date;
+					if (!DateTime.TryParse(dateString, out date))
+					{
+						Console.WriteLine("Date not parsable");
+						continue;
+					}
+
+					string alias = $"{date.Year}/{date.Month}/{date.Day}/{filenameWithoutDate}.html";
+
+					string[] aliases = new string[]
+					{
+						alias,
+						alias.ToLower()
+					};
+
+					mapping.Children.Add(new KeyValuePair<YamlNode, YamlNode>("aliases", aliases));
+
+					var serializer = new SerializerBuilder().Build();
+
+					string newYml = serializer.Serialize(mapping);
+
+					File.WriteAllText(s, $"---\n{newYml}\n---\n {markdown}");
+					Console.WriteLine(s);
+				}
+				else
+				{
+					var aliases = mapping.Children["aliases"];
 				}
 				
 			}
