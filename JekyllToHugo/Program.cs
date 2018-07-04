@@ -52,7 +52,9 @@ namespace JekyllToHugo
 
 				//if you want to replace existing aliases with new ones use the following to remove old ones:
 
-				//mapping.Children.Remove("aliases");
+				mapping.Children.Remove("aliases");
+				mapping.Children.Remove("disqus_identifier");
+				mapping.Children.Remove("disqus_url");
 
 				if (!mapping.Children.ContainsKey("aliases"))
 				{
@@ -73,13 +75,19 @@ namespace JekyllToHugo
 
 					string alias = $"{date.ToString(dateFormat)}/{filenameWithoutDate}.html";
 
-					string[] aliases = new string[]
-					{
+					string[] aliases = {
 						alias,
 						alias.ToLower()
 					};
 
 					mapping.Children.Add(new KeyValuePair<YamlNode, YamlNode>("aliases", aliases));
+
+					mapping.Children.Add(
+						new KeyValuePair<YamlNode, YamlNode>("disqus_identifier", $"https://www.tiernanotoole.ie/{alias}"));
+
+					mapping.Children.Add(
+						new KeyValuePair<YamlNode, YamlNode>("disqus_url", $"https://www.tiernanotoole.ie/{alias}"));
+
 
 					var serializer = new SerializerBuilder().Build();
 
