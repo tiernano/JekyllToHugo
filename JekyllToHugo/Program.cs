@@ -25,6 +25,13 @@ namespace JekyllToHugo
 				int startOfymlBlock = content.IndexOf("---", StringComparison.Ordinal);
 				int endOfymlBlock = content.IndexOf("---", startOfymlBlock +1, StringComparison.Ordinal);
 
+				if (startOfymlBlock < 0 || endOfymlBlock < 0)
+				{
+					Console.WriteLine("Cant find Yaml Block");
+					continue;
+				}
+
+
 				string ymlBlock = content.Substring(startOfymlBlock, endOfymlBlock+3);
 
 				string markdown = content.Substring(endOfymlBlock + 3);
@@ -80,7 +87,7 @@ namespace JekyllToHugo
 						alias.ToLower()
 					};
 
-					mapping.Children.Add(new KeyValuePair<YamlNode, YamlNode>("aliases", aliases));
+					//mapping.Children.Add(new KeyValuePair<YamlNode, YamlNode>("aliases", aliases));
 
 					mapping.Children.Add(
 						new KeyValuePair<YamlNode, YamlNode>("disqus_identifier", $"https://www.tiernanotoole.ie/{alias}"));
@@ -93,7 +100,7 @@ namespace JekyllToHugo
 
 					string newYml = serializer.Serialize(mapping);
 
-					File.WriteAllText(s, $"---\n{newYml}\n---\n {markdown}");
+					File.WriteAllText(s, $"---\n{newYml}\n---\n {markdown.Trim()}");
 					Console.WriteLine(s);
 				}
 				else
